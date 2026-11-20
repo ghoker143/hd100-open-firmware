@@ -1,0 +1,17 @@
+# Firmware images and local working notes are not part of the repo
+*.bin
+notes/
+
+# Local experiment programs
+firmware/src/bin/
+
+# python / build artefacts
+__pycache__/
+*.pyc
+*.elf
+
+# vendor libraries (not redistributable)
+tools/lib/
+
+# hd100-ui is built through firmware/Cargo.lock; its own lock only comes from host tests
+firmware/ui/Cargo.lock

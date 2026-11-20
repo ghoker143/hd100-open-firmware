@@ -1,0 +1,37 @@
+[package]
+name = "hd100-fw"
+version = "0.1.0"
+edition = "2021"
+authors = ["eos"]
+license = "GPL-3.0-or-later"
+default-run = "hd100-fw"
+publish = false
+
+# Same embassy stack (and Cargo.lock) as bp8903-fw, so its CCID / HID code can be shared.
+[dependencies]
+embassy-stm32 = { version = "0.6.0", features = ["stm32f103rb", "defmt", "time-driver-tim4", "unstable-pac"] }
+embassy-executor = { version = "0.10.0", features = ["platform-cortex-m", "executor-thread", "defmt"] }
+embassy-time = { version = "0.5.1", features = ["defmt", "defmt-timestamp-uptime"] }
+embassy-usb = { version = "0.6.0", features = ["defmt"] }
+embassy-futures = "0.1.2"
+embassy-sync = "0.8.0"
+# No "critical-section-single-core": src/rt.rs provides a BASEPRI-based critical section that leaves P0 running.
+cortex-m = { version = "0.7.7", features = ["inline-asm"] }
+critical-section = { version = "1.2", features = ["restore-state-u32"] }
+cortex-m-rt = "0.7.5"
+defmt = "1.0"
+defmt-rtt = "1.0"
+static_cell = "2.1"
+panic-probe = { version = "1.0", features = ["print-defmt"] }
+hd100-ui = { path = "ui" }
+
+[profile.release]
+opt-level = "s"
+lto = true
+debug = 2
+codegen-units = 1
+
+[features]
+# Hold the voice chip in reset at boot (silences the power-on "请插卡"). Takes PA13/PA14 from SWD
+# permanently, so only enable for release builds once there's a bootloader; reflash via BOOT0 otherwise.
+mute = []

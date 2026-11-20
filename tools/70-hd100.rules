@@ -1,0 +1,7 @@
+# HD100 open firmware (1209:0003, development PID): give the logged-in user access to
+# - the HID interface's hidraw node (vendor feature reports: display, beeper, diagnostics; tools/*.py)
+# - its keyboard event node, so test scripts can read magstripe / keypad output without it being typed
+#   into the focused window
+# Install: sudo cp tools/70-hd100.rules /etc/udev/rules.d/ && sudo udevadm control --reload && sudo udevadm trigger
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="0003", TAG+="uaccess"
+SUBSYSTEM=="input", KERNEL=="event*", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="0003", TAG+="uaccess"
